@@ -42,4 +42,13 @@ public class Post {
     )
     @JsonManagedReference
     private List<Comment> comment;
+
+    public Post(String post_id, String poster_id, Date date_posted, String content, int stars, int replies) {
+        this.post_id = post_id;
+        this.poster_id = poster_id;
+        this.date_posted = date_posted;
+        this.content = content;
+        this.stars = stars;
+        this.replies = replies;
+    }
 }

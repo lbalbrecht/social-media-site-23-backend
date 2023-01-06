@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -27,14 +26,14 @@ public class AuthController {
     private final UserService userServ;
     private final TokenService tokenServ;
 
-    @CrossOrigin(exposedHeaders = "user-auth")
+    @CrossOrigin(exposedHeaders = "user_auth")
     @ResponseStatus(value = HttpStatus.OK)
-    @PostMapping(consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/signin", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Principal login(@RequestBody LoginRequest request, HttpServletResponse resp) {
         try {
             Principal principal = userServ.login(request);
             String token = tokenServ.generateToken(principal);
-            resp.setHeader("user-auth", token);
+            resp.setHeader("user_auth", token);
             return principal;
         } catch (InvalidRequestException e) {
             e.getStackTrace();
@@ -43,12 +42,15 @@ public class AuthController {
         }
     }
 
-    @CrossOrigin
+    @CrossOrigin(exposedHeaders = "user_auth")
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/signup", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Principal signup(@RequestBody NewUserRequest request) {
+    public @ResponseBody Principal signup(@RequestBody NewUserRequest request, HttpServletResponse resp) {
         try {
-            return userServ.register(request);
+            Principal principal = userServ.register(request);
+            String token = tokenServ.generateToken(principal);
+            resp.setHeader("user_auth", token);
+            return principal;
         } catch (InvalidRequestException e) {
             e.getStackTrace();
             throw new InvalidRequestException();

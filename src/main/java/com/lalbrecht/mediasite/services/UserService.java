@@ -6,8 +6,10 @@ import com.lalbrecht.mediasite.dtos.responses.Principal;
 import com.lalbrecht.mediasite.models.User;
 import com.lalbrecht.mediasite.repositories.UserRepository;
 import com.lalbrecht.mediasite.utils.HashConfig;
+import com.lalbrecht.mediasite.utils.custom_exceptions.AuthenticationException;
 import com.lalbrecht.mediasite.utils.custom_exceptions.InvalidRequestException;
 import com.lalbrecht.mediasite.utils.custom_exceptions.ResourceConflictException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +17,11 @@ import java.util.Date;
 import java.util.UUID;
 
 @Service
+@AllArgsConstructor
 public class UserService {
     @Autowired
     private final UserRepository userRepo;
     private final HashConfig hash;
-
-    public UserService(UserRepository userRepo, HashConfig hash) {
-        this.userRepo = userRepo;
-        this.hash = hash;
-    }
 
     public Principal register(NewUserRequest request) {
         User user = null;
@@ -61,7 +59,7 @@ public class UserService {
         if (user != null) {
             return new Principal(user.getUser_id(), user.getUsername(), user.isMod());
         } else {
-            throw new InvalidRequestException("\nUser not found with those credentials");
+            throw new AuthenticationException("\nNo user found with those credentials");
         }
     }
 
