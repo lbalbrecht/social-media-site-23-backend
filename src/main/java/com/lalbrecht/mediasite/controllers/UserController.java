@@ -5,6 +5,7 @@ import com.lalbrecht.mediasite.services.TokenService;
 import com.lalbrecht.mediasite.services.UserService;
 import com.lalbrecht.mediasite.utils.custom_exceptions.InvalidRequestException;
 import com.lalbrecht.mediasite.utils.custom_exceptions.ResourceConflictException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,16 +16,12 @@ import org.springframework.web.client.HttpServerErrorException;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
 
     @Autowired
     private final UserService userServ;
     private final TokenService tokenServ;
-
-    public UserController(UserService userServ, TokenService tokenServ) {
-        this.userServ = userServ;
-        this.tokenServ = tokenServ;
-    }
 
     @CrossOrigin
     @ResponseStatus(value = HttpStatus.CREATED)

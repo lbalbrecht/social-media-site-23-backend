@@ -1,11 +1,14 @@
 package com.lalbrecht.mediasite.services;
 
+import com.lalbrecht.mediasite.dtos.requests.LoginRequest;
 import com.lalbrecht.mediasite.dtos.requests.NewUserRequest;
+import com.lalbrecht.mediasite.dtos.responses.Principal;
 import com.lalbrecht.mediasite.models.User;
 import com.lalbrecht.mediasite.repositories.UserRepository;
 import com.lalbrecht.mediasite.utils.HashConfig;
 import com.lalbrecht.mediasite.utils.custom_exceptions.InvalidRequestException;
 import com.lalbrecht.mediasite.utils.custom_exceptions.ResourceConflictException;
+import org.omg.CORBA.DynAnyPackage.Invalid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +29,7 @@ public class UserService {
     public User register(NewUserRequest request) {
         User user = null;
         if (isValidUsername(request.getUsername())) {
-            if(isDuplicateUsername(request.getUsername())) {
+            if (isDuplicateUsername(request.getUsername())) {
                 if (isValidPassword(request.getPassword1())) {
                     if (isSamePassword(request.getPassword1(), request.getPassword2())) {
                         byte[] salt = hash.generateSalt();
@@ -46,6 +49,19 @@ public class UserService {
             }
         }
         return user;
+    }
+
+    public Principal login(LoginRequest req) {
+        byte[] salt = userRepo.getSaltByUsername(req.getUsername());
+        String saltyPass = hash.hashPassword(req.getPassword(), salt);
+
+        User user = userRepo.login(req.getUsername(), saltyPass);
+
+        if (user != null) {
+            return new Principal(user.getUser_id(), user.getUsername(), user.isMod());
+        } else {
+            throw new InvalidRequestException("\nUser not found with those credentials");
+        }
     }
 
     public boolean isValidUsername(String username) {

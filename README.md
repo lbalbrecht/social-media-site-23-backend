@@ -41,6 +41,7 @@ Are you sick of the relentless algorithms of social media? Do you wish you could
 * Dashboard view of most-liked posts
 * Dashboard view of follower-liked posts
 * User information on profile
+* Users can update account info
 
 ### Stretch Features Phase 5 - Chat
 
