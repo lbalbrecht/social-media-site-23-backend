@@ -1,5 +1,6 @@
 package com.lalbrecht.mediasite.controllers;
 
+import com.lalbrecht.mediasite.dtos.requests.FindPostRequest;
 import com.lalbrecht.mediasite.dtos.requests.NewPostRequest;
 import com.lalbrecht.mediasite.models.Post;
 import com.lalbrecht.mediasite.services.PostService;
@@ -39,6 +40,23 @@ public class PostController {
             e.getStackTrace();
             System.out.println(e.getMessage());
             throw new AuthenticationException();
+        }
+    }
+
+    @CrossOrigin
+    @PutMapping(value = "/like", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody void likePost(@RequestBody FindPostRequest post, HttpServletRequest req) {
+        if (req.getHeader("user_auth") == null) {
+            throw new AuthenticationException();
+        } else {
+            try {
+                postServ.starPost(post.getPost_id());
+                System.out.println(postServ.getPostById(post.getPost_id()).getStars());
+            } catch (InvalidRequestException e) {
+                e.getStackTrace();
+                System.out.println(e.getMessage());
+                throw new InvalidRequestException();
+            }
         }
     }
 

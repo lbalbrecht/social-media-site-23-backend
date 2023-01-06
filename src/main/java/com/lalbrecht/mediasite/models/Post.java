@@ -31,7 +31,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
-    private String poster_id;
+    private User user;
 
     @OneToMany (
             mappedBy = "post",
@@ -41,12 +41,12 @@ public class Post {
     @JsonManagedReference
     private List<Comment> comment;
 
-    public Post(String post_id, Date date_posted, String content, int stars, int replies, String uid) {
+    public Post(String post_id, Date date_posted, String content, int stars, int replies, User user) {
         this.post_id = post_id;
         this.date_posted = date_posted;
         this.content = content;
         this.stars = stars;
         this.replies = replies;
-        this.poster_id = uid;
+        this.user = user;
     }
 }

@@ -23,7 +23,8 @@ public class PostService {
 
     public Post newPost(NewPostRequest req, String uid) {
         Post post = null;
-        if (uid != null) {
+        if (userRepo.findById(uid).isPresent()) {
+            User user = userRepo.findById(uid).get();
             if (isValidLength(req.getContent())) {
                 post = new Post(
                         UUID.randomUUID().toString(),
@@ -31,7 +32,7 @@ public class PostService {
                         req.getContent(),
                         0,
                         0,
-                        uid
+                        user
                 );
                 postRepo.save(post);
             }
@@ -39,6 +40,23 @@ public class PostService {
             throw new AuthenticationException("\nYou must be logged in to post!");
         }
         return post;
+    }
+
+    public void starPost(String pid) {
+        if (postRepo.findById(pid).isPresent()) {
+            int stars = postRepo.getPostLikes(pid);
+            postRepo.starPost(pid, (stars + 1));
+        } else {
+            throw new InvalidRequestException("\nPost not found");
+        }
+    }
+
+    public Post getPostById(String pid) {
+        if (postRepo.findById(pid).isPresent()) {
+            return postRepo.findById(pid).get();
+        } else {
+            throw new InvalidRequestException("\nPost not found");
+        }
     }
 
     public boolean isValidLength(String post) {
