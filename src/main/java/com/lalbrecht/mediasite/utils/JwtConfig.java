@@ -9,19 +9,21 @@ import java.security.Key;
 
 @Component
 public class JwtConfig {
+    private final String salt = "Loremipsumdolorsitametconsecteturadipiscingelitseddoeiusmodtemporincididuntutlaboreet";
+
+    private final int expiration = 60 * 60 * 1000;
 
     private final SignatureAlgorithm sigAlg = SignatureAlgorithm.HS256;
 
     private final Key signingKey;
 
     public JwtConfig() {
-        String salt = "lakjuhewbalfaiuhlilawsekjhbewliufbalsdkjewlhiaulhwekjawhbaklwjusygo";
         byte[] saltyBytes = DatatypeConverter.parseBase64Binary(salt);
         signingKey = new SecretKeySpec(saltyBytes, sigAlg.getJcaName());
     }
 
     public int getExpiration() {
-        return 60 * 60 * 1000;
+        return expiration;
     }
 
     public SignatureAlgorithm getSigAlg() {

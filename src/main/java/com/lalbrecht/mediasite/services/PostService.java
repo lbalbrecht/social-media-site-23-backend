@@ -2,7 +2,9 @@ package com.lalbrecht.mediasite.services;
 
 import com.lalbrecht.mediasite.dtos.requests.NewPostRequest;
 import com.lalbrecht.mediasite.models.Post;
+import com.lalbrecht.mediasite.models.User;
 import com.lalbrecht.mediasite.repositories.PostRepository;
+import com.lalbrecht.mediasite.repositories.UserRepository;
 import com.lalbrecht.mediasite.utils.custom_exceptions.AuthenticationException;
 import com.lalbrecht.mediasite.utils.custom_exceptions.InvalidRequestException;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ import java.util.UUID;
 public class PostService {
     @Autowired
     private final PostRepository postRepo;
+    private final UserRepository userRepo;
 
     public Post newPost(NewPostRequest req, String uid) {
         Post post = null;
@@ -24,11 +27,11 @@ public class PostService {
             if (isValidLength(req.getContent())) {
                 post = new Post(
                         UUID.randomUUID().toString(),
-                        uid,
                         new java.sql.Date(new Date().getTime()),
                         req.getContent(),
                         0,
-                        0
+                        0,
+                        uid
                 );
                 postRepo.save(post);
             }

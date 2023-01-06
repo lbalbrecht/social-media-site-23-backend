@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 
@@ -25,11 +26,11 @@ public class PostController {
     private final TokenService tokenServ;
 
     @CrossOrigin
-    @PostMapping(value = "/new", consumes = "application.json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody Post newPost(@RequestHeader(name = "user_auth") String token, @RequestBody NewPostRequest req) {
+    @PostMapping(value = "/new", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody Post newPost(@RequestBody NewPostRequest  post, HttpServletRequest req) {
         try {
-            String uid = tokenServ.extractRequesterDetails(token).getId();
-            return postServ.newPost(req, uid);
+            String uid = tokenServ.extractRequesterDetails(req.getHeader("user_auth")).getId();
+            return postServ.newPost(post, uid);
         } catch (InvalidRequestException e) {
             e.getStackTrace();
             System.out.println(e.getMessage());

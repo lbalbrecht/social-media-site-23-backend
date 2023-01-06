@@ -19,8 +19,6 @@ import java.util.List;
 public class Post {
     @Id
     private String post_id;
-    @Column(name = "poster_id", nullable = false)
-    private String poster_id;
     @Column(name = "date_posted", nullable = false)
     private Date date_posted;
     @Column(name = "content", nullable = false)
@@ -33,7 +31,7 @@ public class Post {
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
-    private User user;
+    private String poster_id;
 
     @OneToMany (
             mappedBy = "post",
@@ -43,12 +41,12 @@ public class Post {
     @JsonManagedReference
     private List<Comment> comment;
 
-    public Post(String post_id, String poster_id, Date date_posted, String content, int stars, int replies) {
+    public Post(String post_id, Date date_posted, String content, int stars, int replies, String uid) {
         this.post_id = post_id;
-        this.poster_id = poster_id;
         this.date_posted = date_posted;
         this.content = content;
         this.stars = stars;
         this.replies = replies;
+        this.poster_id = uid;
     }
 }
