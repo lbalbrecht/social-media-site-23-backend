@@ -32,7 +32,7 @@ Are you sick of the relentless algorithms of social media? Do you wish you could
 ### Stretch Features Phase 3 - Groups
 
 * Users create and join groups
-* Groups can be private
+* Groups can be private or public
 * Groups have owners and moderators
 * Groups have tags
 

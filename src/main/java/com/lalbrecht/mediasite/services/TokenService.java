@@ -2,6 +2,7 @@ package com.lalbrecht.mediasite.services;
 
 import com.lalbrecht.mediasite.dtos.responses.Principal;
 import com.lalbrecht.mediasite.utils.JwtConfig;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import lombok.AllArgsConstructor;
@@ -28,5 +29,19 @@ public class TokenService {
                 .signWith(jwtConfig.getSigAlg(), jwtConfig.getSigningKey());
 
         return tokenBuilder.compact();
+    }
+
+    public Principal extractRequesterDetails(String token) {
+        try {
+            Claims claims = Jwts.parser()
+                    .setSigningKey(jwtConfig.getSigningKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            return new Principal(claims.getId(), claims.getSubject(), claims.get("mod", Boolean.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

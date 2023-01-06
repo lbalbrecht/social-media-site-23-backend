@@ -12,14 +12,12 @@ import java.sql.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "groups")
+@Table(name = "user_groups")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class Group {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
     private String group_id;
     @Column(name = "group_name", nullable = false)
     private String group_name;

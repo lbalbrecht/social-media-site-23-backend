@@ -16,10 +16,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class Comment {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
     private String comment_id;
     @Column(name = "commenter_id", nullable = false)
     private String commenter_id;
@@ -46,14 +44,14 @@ public class Comment {
     @JsonBackReference
     private Post post;
 
-    @OneToMany (
-            mappedBy = "comment",
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-
-    @ManyToOne
-    @JoinColumn(name = "comment_id", nullable = false)
-    @JsonBackReference
-    private Comment comment;
+//    @OneToMany (
+//            mappedBy = "comment",
+//            fetch = FetchType.EAGER,
+//            cascade = CascadeType.ALL
+//    )
+//
+//    @ManyToOne
+//    @JoinColumn(name = "comment_id", nullable = false)
+//    @JsonBackReference
+//    private Comment comment;
 }

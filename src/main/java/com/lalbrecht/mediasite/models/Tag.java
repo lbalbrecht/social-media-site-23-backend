@@ -16,10 +16,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class Tag {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
     private String tag_id;
     @Column(name = "tag_name", nullable = false)
     private String tag_name;

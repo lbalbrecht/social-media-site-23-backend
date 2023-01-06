@@ -15,10 +15,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class User {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
     private String user_id;
     @Column(name = "username", nullable = false)
     private String username;
@@ -51,6 +49,14 @@ public class User {
     @JsonManagedReference
     private List<Comment> comment;
 
-    public User(String username, String password, byte[] salt, String email, int prestige, boolean mod, Date joined_date) {
+    public User(String user_id, String username, String password, byte[] salt, String email, int prestige, boolean mod, Date joined_date) {
+        this.user_id = user_id;
+        this.username = username;
+        this.password = password;
+        this.salt = salt;
+        this.email = email;
+        this.prestige = prestige;
+        this.mod = mod;
+        this.joined_date = joined_date;
     }
 }

@@ -1,6 +1,9 @@
 package com.lalbrecht.mediasite.controllers;
 
+import com.lalbrecht.mediasite.dtos.requests.NewPasswordRequest;
 import com.lalbrecht.mediasite.dtos.requests.NewUserRequest;
+import com.lalbrecht.mediasite.dtos.requests.UserInfoRequest;
+import com.lalbrecht.mediasite.dtos.responses.Principal;
 import com.lalbrecht.mediasite.services.TokenService;
 import com.lalbrecht.mediasite.services.UserService;
 import com.lalbrecht.mediasite.utils.custom_exceptions.InvalidRequestException;
@@ -24,17 +27,48 @@ public class UserController {
     private final TokenService tokenServ;
 
     @CrossOrigin
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping(value = "/signup", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody String signup(@RequestBody NewUserRequest request) {
+    @ResponseStatus(value = HttpStatus.OK)
+    @PutMapping(value = "update_info", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String updateUserInfo(@RequestBody UserInfoRequest request, @RequestParam(name = "info") String info, @RequestHeader(name = "Authorization") String token) {
+        Principal principal = tokenServ.extractRequesterDetails(token);
+        String userId = principal.getId();
+        String updatedInfo = request.getRequest();
+
         try {
-            return userServ.register(request).getUser_id();
+            switch(info) {
+                case "username":
+                    userServ.updateUsername(userId, updatedInfo);
+                    return "Username successfully updated";
+                case "email":
+                    userServ.updateEmail(userId, updatedInfo);
+                    return "Email successfully updated";
+                default:
+                    throw new HttpServerErrorException(HttpStatus.BAD_GATEWAY);
+            }
         } catch (InvalidRequestException e) {
-            e.getStackTrace();
+            System.out.println(e.getMessage());
             throw new InvalidRequestException();
         } catch (ResourceConflictException e) {
-            e.getStackTrace();
+            System.out.println(e.getMessage());
             throw new ResourceConflictException();
+        }
+    }
+
+    @CrossOrigin
+    @ResponseStatus(value = HttpStatus.OK)
+    @PutMapping(value = "update_password", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody String updateUserPassword(@RequestBody NewPasswordRequest request, @RequestHeader(name = "user-auth") String token) {
+        Principal principal = tokenServ.extractRequesterDetails(token);
+        String userId = principal.getId();
+
+        try {
+            userServ.matchesExistingPassword(userId,request.getOldPassword());
+            userServ.updatePassword(userId, request.getPassword1(), request.getPassword2());
+            return "Password successfully updated";
+        } catch (InvalidRequestException e) {
+            e.getStackTrace();
+            System.out.println(e.getMessage());
+            throw new InvalidRequestException();
         }
     }
 

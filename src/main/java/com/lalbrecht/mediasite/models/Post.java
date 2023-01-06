@@ -16,10 +16,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Component
 public class Post {
     @Id
-    @GeneratedValue (strategy = GenerationType.AUTO)
     private String post_id;
     @Column(name = "poster_id", nullable = false)
     private String poster_id;
