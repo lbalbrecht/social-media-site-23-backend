@@ -1,4 +1,4 @@
-package com.lalbrecht.mediasite.utils;
+package com.lalbrecht.mediasite;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;

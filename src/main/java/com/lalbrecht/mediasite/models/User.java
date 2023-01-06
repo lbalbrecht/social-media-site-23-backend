@@ -51,4 +51,6 @@ public class User {
     @JsonManagedReference
     private List<Comment> comment;
 
+    public User(String username, String password, byte[] salt, String email, int prestige, boolean mod, Date joined_date) {
+    }
 }
