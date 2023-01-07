@@ -26,14 +26,15 @@ public class AuthController {
     private final UserService userServ;
     private final TokenService tokenServ;
 
-    @CrossOrigin(exposedHeaders = "user_auth")
+    @CrossOrigin
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping(value = "/signin", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Principal login(@RequestBody LoginRequest request, HttpServletResponse resp) {
         try {
             Principal principal = userServ.login(request);
             String token = tokenServ.generateToken(principal);
-            resp.setHeader("user_auth", token);
+            resp.setHeader("Authorization", token);
+            resp.setHeader("Access-Control-Expose-Headers", "Authorization");
             return principal;
         } catch (InvalidRequestException e) {
             e.getStackTrace();
@@ -42,20 +43,21 @@ public class AuthController {
         }
     }
 
-    @CrossOrigin(exposedHeaders = "user_auth")
+    @CrossOrigin
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(value = "/signup", consumes = "application/json", produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody Principal signup(@RequestBody NewUserRequest request, HttpServletResponse resp) {
         try {
             Principal principal = userServ.register(request);
             String token = tokenServ.generateToken(principal);
-            resp.setHeader("user_auth", token);
+            resp.setHeader("Authorization", token);
+            resp.setHeader("Access-Control-Expose-Headers", "Authorization");
             return principal;
         } catch (InvalidRequestException e) {
-            e.getStackTrace();
+            System.out.println(e.getMessage());
             throw new InvalidRequestException();
         } catch (ResourceConflictException e) {
-            e.getStackTrace();
+            System.out.println(e.getMessage());
             throw new ResourceConflictException();
         }
     }
